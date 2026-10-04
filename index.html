@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Happy Birthday แบมๆ 🌈💖 | จากเค้าสู่ Care-a-Lot</title>
+  <meta name="description" content="ของขวัญวันเกิดสุดพิเศษสำหรับแบมๆ ในดินแดน Care Bears ที่เต็มไปด้วยความรักและความอบอุ่นจากเค้า">
+  
+  <!-- Apple Mobile Web App & iOS Optimizations -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Bam's Day">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="apple-touch-icon" href="assets/carebears/bestfriend-wave.png">
+  
+  <!-- Google Fonts: Fredoka & Mali for ultra cute aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Mali:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Floating background decorations -->
+  <div class="bg-clouds-container" id="bgClouds"></div>
+  <div class="bg-stars-container" id="bgStars"></div>
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- Top Navigation & Controls Bar -->
+  <header class="top-nav">
+    <div class="brand-badge">
+      <span class="heart-pulse">💖</span>
+      <span class="brand-text">Bam-Bam's Special Day</span>
+    </div>
+
+    <!-- Scene Progress Stepper -->
+    <div class="progress-track" id="progressTrack">
+      <div class="progress-bar-fill" id="progressBarFill"></div>
+      <div class="step-dot active" data-step="1" title="กล่องของขวัญ">🎁</div>
+      <div class="step-dot" data-step="2" title="ยินดีต้อนรับ">🌈</div>
+      <div class="step-dot" data-step="3" title="รูปคู่หน้าปั่นๆ">📸</div>
+      <div class="step-dot" data-step="4" title="เป่าเค้ก">🎂</div>
+      <div class="step-dot" data-step="5" title="ไพ่ทาโรต์แคร์แบร์">🃏</div>
+      <div class="step-dot" data-step="6" title="Thunder Heart ราศีตุลย์">⚡</div>
+      <div class="step-dot" data-step="7" title="จดหมายจากเค้า">💌</div>
+    </div>
+
+    <!-- Audio BGM toggle -->
+    <div class="sound-controls">
+      <button class="sound-btn" id="soundToggleBtn" aria-label="เปิด/ปิดเพลง">
+        <span id="soundIcon">🎵</span>
+        <span class="sound-label">BGM</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main App Wrapper -->
+  <main class="app-container">
+
+    <!-- ================= SCENE 1: GIFT BOX ================= -->
+    <section class="scene active" id="scene1">
+      <div class="swing-bear-decor swing-left">
+        <img src="assets/carebears/star-swing.png" alt="Care Bears Star Swing" class="swinging-bear">
+      </div>
+      <div class="swing-bear-decor swing-right">
+        <img src="assets/carebears/friend-swing.png" alt="Friend Bear Swing" class="swinging-bear swing-delay">
+      </div>
+
+      <div class="scene-content gift-scene-content">
+        <div class="speech-bubble bounce-in">
+          <p class="bubble-tag">✨ แฮปปี้เบิร์ธเดย์นะ ✨</p>
+          <h1 class="girl-title">ถึง "แบมๆ" 🎂</h1>
+          <p class="bubble-sub">เค้าตั้งใจเขียนเว็บนี้มาให้เป็นของขวัญวันเกิด... ลองกดเปิดกล่องดูสิ</p>
+        </div>
+
+        <div class="gift-box-wrapper" id="giftBoxWrapper">
+          <div class="gift-glow"></div>
+          <div class="gift-box" id="giftBox">
+            <div class="box-lid">
+              <div class="lid-ribbon"></div>
+              <div class="box-bow">🎀</div>
+            </div>
+            <div class="box-body">
+              <div class="body-ribbon"></div>
+              <div class="box-badge">To: Bam-Bam 💖</div>
+            </div>
+          </div>
+          <p class="tap-hint"><span class="finger-point">👆</span> แตะที่กล่องเพื่อเปิดดูเลย</p>
+        </div>
+
+        <div class="mascot-guide left-guide">
+          <img src="assets/carebears/bestfriend-wave.png" alt="Best Friend Bear" class="bounce-bear">
+          <span class="mascot-tag">แก๊งแคร์แบร์มารอรับแล้ว!</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 2: WELCOME CARE-A-LOT ================= -->
+    <section class="scene" id="scene2">
+      <div class="scene-content welcome-scene-content">
+        <div class="rainbow-header">
+          <div class="rainbow-arc"></div>
+          <h2 class="welcome-title">ยินดีต้อนรับสู่ Care-a-Lot 🏰🌈</h2>
+          <p class="welcome-subtitle">รู้ว่าแบมๆ ชอบแคร์แบร์มาก เค้าเลยทำหน้านี้ขึ้นมาให้โดยเฉพาะ</p>
+        </div>
+
+        <div class="welcome-card glass-panel">
+          <div class="welcome-bear-hero">
+            <img src="assets/carebears/funshine-umbrella.png" alt="Funshine Bear" class="hero-bear">
+          </div>
+          <div class="welcome-text-box">
+            <h3>HBD นะแบมๆ 🎉</h3>
+            <p>
+              เค้าอาจจะไม่ใช่คนหวานๆ หรือพูดอะไรซึ้งๆ เก่งเหมือนคนอื่นนะ<br>
+              แถมบางทีงานก็ยุ่งจนไม่ค่อยมีเวลาให้ ยิ่งอยู่ไกลกันด้วย...<br>
+              แต่วันเกิดปีนี้ เค้าตั้งใจเขียนเว็บนี้ให้แบมๆ ลองกดดูไปเรื่อยๆ นะครับ
+            </p>
+            <div class="tags-container">
+              <span class="pill-tag">🐻 แบมๆ ชอบแคร์แบร์</span>
+              <span class="pill-tag">🛠️ ตั้งใจทำให้อย่างดี</span>
+              <span class="pill-tag">🎂 สุขสันต์วันเกิดนะ</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="scene-navigation">
+          <button class="nav-btn prev-btn" data-go="1">⬅️ ย้อนกลับ</button>
+          <button class="nav-btn next-btn pulse-button" data-go="3">
+            เปิดซองรูปคู่หน้าปั่นๆ 💌📸
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 3: DUO FUN POLAROID ENVELOPE ================= -->
+    <section class="scene" id="scene3">
+      <div class="scene-content duo-scene-content">
+        <div class="section-title-wrap">
+          <span class="magic-sparkle-tag">💌 Secret Duo Polaroid 💌</span>
+          <h2 class="section-title">ซองรูปคู่หน้าปั่นๆ ของเรา 📸🤪</h2>
+          <p class="section-desc">มีซองจดหมายลับส่งมาจากเค้า... แตะที่ซองเพื่อเปิดดูข้างในเลย!</p>
+        </div>
+
+        <!-- Interactive Envelope Stage -->
+        <div class="duo-envelope-stage" id="duoEnvelopeStage">
+          <!-- The Envelope -->
+          <div class="duo-envelope-box" id="duoEnvelopeBox">
+            <div class="duo-envelope-flap" id="duoEnvelopeFlap"></div>
+            <div class="duo-envelope-seal" id="duoEnvelopeSeal">
+              <span class="seal-icon">💌</span>
+              <span class="seal-text">แตะเพื่อแกะซองรูปคู่</span>
+            </div>
+            <div class="duo-envelope-front">
+              <span class="env-to">To: แบมๆ 💖</span>
+              <span class="env-stamp">🐻 Care-a-Lot Mail</span>
+            </div>
+          </div>
+          <p class="tap-hint duo-hint" id="duoTapHint"><span class="finger-point">👆</span> แตะที่ซองจดหมายเพื่อดึงรูปคู่ออกมาดูเลย!</p>
+        </div>
+
+        <!-- The Duo Polaroid Board (Revealed when envelope opens) -->
+        <div class="duo-polaroid-board" id="duoPolaroidBoard" style="display:none;">
+          
+          <div class="duo-polaroids-container">
+            <!-- Left Polaroid: His Photo -->
+            <div class="duo-polaroid-card his-card" id="hisPolaroidCard">
+              <div class="pin-tack">📌</div>
+              <div class="polaroid-ribbon-tag">วิศวกรปากจู๋ 😚🛠️</div>
+              
+              <div class="duo-photo-frame">
+                <!-- His Photo Display directly using 24427.jpg -->
+                <img id="hisPhotoImg" src="24427.jpg" alt="รูปหน้าเค้าทำปากจู๋" class="duo-photo-img" style="display:block;">
+              </div>
+
+              <div class="duo-polaroid-caption">
+                <h4>เค้าเอง (ฉบับปากจู๋ 😚)</h4>
+                <p>เค้าเปิดมาด้วยหน้าปั่นๆ ขนาดนี้ แบมๆ ต้องทำหน้าให้ฮากว่าเค้านะ!</p>
+              </div>
+
+              <!-- Upload / Change button for him -->
+              <div class="his-upload-row">
+                <label for="hisPhotoFileInput" class="his-upload-btn" title="คลิกเพื่อเลือกไฟล์รูปของเค้า">
+                  <span>📁</span> เปลี่ยนรูปเค้า
+                  <input type="file" id="hisPhotoFileInput" accept="image/*" style="display:none;">
+                </label>
+              </div>
+            </div>
+
+            <!-- VS / Love connector badge -->
+            <div class="duo-connector">
+              <div class="connector-heart">💖</div>
+              <div class="connector-tag">คู่หูตัวตึง</div>
+            </div>
+
+            <!-- Right Polaroid: Her Goofy Selfie Photo -->
+            <div class="duo-polaroid-card her-card" id="herPolaroidCard">
+              <div class="pin-tack">📌</div>
+              <div class="polaroid-ribbon-tag her-tag">แบมๆ ตัวป่วน 🤪💖</div>
+
+              <div class="duo-photo-frame her-photo-frame">
+                <!-- Live Camera Viewfinder -->
+                <video id="herWebcamVideo" autoplay playsinline webkit-playsinline muted class="duo-camera-stream" style="display:none;"></video>
+                
+                <!-- Her Captured / Uploaded Photo -->
+                <img id="herPhotoImg" src="" alt="รูปหน้าปั่นๆ ของแบมๆ" class="duo-photo-img" style="display:none;">
+
+                <!-- Placeholder waiting for her to snap -->
+                <div class="her-photo-placeholder" id="herPhotoPlaceholder">
+                  <div class="placeholder-avatar bounce-soft">😜📸</div>
+                  <p class="placeholder-title">ตาแบมๆ แล้ว!</p>
+                  <p class="placeholder-sub">กดเปิดกล้องแล้วทำหน้าปั่นๆ ได้เลยน้า</p>
+                </div>
+
+                <!-- Shutter Flash Overlay -->
+                <div class="shutter-flash" id="duoShutterFlash"></div>
+                <!-- Countdown Overlay -->
+                <div class="countdown-overlay" id="duoCountdownOverlay">3</div>
+              </div>
+
+              <div class="duo-polaroid-caption">
+                <h4 id="herCaptionTitle">แบมๆ หน้าปั่น 🤪</h4>
+                <p id="herCaptionText">ทำหน้ากวนๆ ตลกๆ ให้สมเป็นตัวป่วนประจำตัวเค้า!</p>
+              </div>
+
+              <!-- Her Selfie & Upload Controls -->
+              <div class="her-actions-box">
+                <div class="her-buttons-row">
+                  <button class="duo-action-btn camera-btn" id="duoStartCamBtn">
+                    <span>📹</span> เปิดกล้องเซลฟี่
+                  </button>
+                  <button class="duo-action-btn snap-btn-duo" id="duoSnapBtn" style="display:none;">
+                    <span>📸</span> แชะหน้าปั่นเลย! (3 วิ)
+                  </button>
+                  <label for="herPhotoFileInput" class="duo-action-btn file-btn">
+                    <span>📁</span> เลือกรูปจากเครื่อง
+                    <input type="file" id="herPhotoFileInput" accept="image/*" style="display:none;">
+                  </label>
+                  <button class="duo-action-btn retake-btn" id="duoRetakeBtn" style="display:none;">
+                    <span>🔄</span> ถ่ายใหม่อีกรอบ
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Duo Finished Status & Download / Save Keepsake -->
+          <div class="duo-result-card glass-panel" id="duoResultCard" style="display:none;">
+            <div class="result-banner">
+              <span class="sparkle-icon">✨</span>
+              <h3>รูปคู่หน้าปั่นๆ ประจำปีนี้เสร็จแล้ว! 🐻💖</h3>
+              <span class="sparkle-icon">✨</span>
+            </div>
+            <p class="result-subtitle">
+              หน้าตลกๆ ของเราสองคน มีใบเดียวในโลก เซฟเก็บไว้ดูเวลาคิดถึงกันนะ!
+            </p>
+            <div class="result-actions">
+              <button class="download-duo-btn pulse-button" id="downloadDuoBtn">
+                <span>💾</span> บันทึกรูปคู่หน้าปั่นๆ ลงเครื่อง / Photos
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Hidden canvas for rendering final duo merged polaroid -->
+        <canvas id="hiddenDuoCanvas" style="display:none;"></canvas>
+
+        <div class="scene-navigation">
+          <button class="nav-btn prev-btn" data-go="2">⬅️ ย้อนกลับ</button>
+          <button class="nav-btn next-btn pulse-button" data-go="4">
+            ไปเป่าเค้กวันเกิดกันต่อเลย! 🎂✨
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 4: MAKE A WISH & CAKE ================= -->
+    <section class="scene" id="scene4">
+      <div class="scene-content cake-scene-content">
+        <div class="section-title-wrap">
+          <h2 class="section-title">มาเป่าเค้กกันนะ 🎂🕯️</h2>
+          <p class="section-desc">อธิษฐานในใจแล้วกดเป่าเทียนได้เลยนะ</p>
+        </div>
+
+        <div class="cake-arena">
+          <div class="cake-cheerers left-cheerer">
+            <img src="assets/carebears/harmony-cloud.png" alt="Harmony Bear" class="cheer-bear float-soft">
+          </div>
+
+          <!-- Interactive 3D CSS / SVG Cake -->
+          <div class="cake-container" id="cakeContainer">
+            <div class="candle-wrapper" id="candleWrapper">
+              <div class="flame" id="flame">
+                <div class="flame-inner"></div>
+                <div class="spark-dots"></div>
+              </div>
+              <div class="smoke" id="smoke">💨 💕</div>
+              <div class="candle-stick"></div>
+            </div>
+
+            <!-- Cake Tiers -->
+            <div class="cake-tier tier-top">
+              <div class="frosting-dripping"></div>
+              <div class="strawberry-decor">🍓 💖 🍓</div>
+            </div>
+            <div class="cake-tier tier-middle">
+              <div class="middle-ribbon">🌈 HAPPY BIRTHDAY BAM-BAM 🌈</div>
+            </div>
+            <div class="cake-tier tier-bottom">
+              <div class="bottom-pearls">⚪💖⚪💖⚪💖⚪💖⚪</div>
+            </div>
+            <div class="cake-plate"></div>
+          </div>
+
+          <div class="cake-cheerers right-cheerer">
+            <img src="assets/carebears/funshine-run.png" alt="Funshine Bear" class="cheer-bear bounce-soft">
+          </div>
+        </div>
+
+        <!-- Blow Action Button -->
+        <div class="cake-actions">
+          <button class="blow-btn" id="blowBtn">
+            <span class="blow-icon">💨</span>
+            <span class="blow-text">แตะเพื่อเป่าเทียนวันเกิด!</span>
+          </button>
+          <div class="wish-success-card" id="wishSuccessCard">
+            <h3>🎉 สุขสันต์วันเกิดนะแบมๆ 🎉</h3>
+            <p>ขอให้ปีนี้มีความสุขมากๆ สุขภาพแข็งแรง ไม่เจ็บไม่ป่วยนะ<br>เค้าจะคอยอยู่ข้างๆ แบมๆ เสมอครับ</p>
+          </div>
+        </div>
+
+        <div class="scene-navigation">
+          <button class="nav-btn prev-btn" data-go="3">⬅️ ย้อนกลับ</button>
+          <button class="nav-btn next-btn pulse-button" data-go="5">
+            ไปสับไพ่ทาโรต์อวยพรกันเลย! 🃏✨
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 5: CARE BEARS BIRTHDAY TAROT ================= -->
+    <section class="scene" id="scene5">
+      <div class="scene-content tarot-scene-content">
+        <div class="section-title-wrap">
+          <span class="magic-sparkle-tag">✨ Care Bears Birthday Oracle ✨</span>
+          <h2 class="section-title">ไพ่ทาโรต์คำทำนาย & คำอวยพรประจำปี 🔮🌈</h2>
+          <p class="section-desc">ตั้งจิตอธิษฐานสิ่งดีๆ แล้วแตะปุ่ม "สับไพ่" จากนั้นเลือกไพ่ 3 ใบ เพื่อเปิดรับคำอวยพรในปีนี้ของแบมๆ นะคะ</p>
+        </div>
+
+        <div class="tarot-table-area">
+          <!-- Tarot Deck & Shuffle Controls -->
+          <div class="tarot-deck-container" id="tarotDeckContainer">
+            <div class="tarot-card-deck" id="tarotDeck">
+              <div class="deck-card deck-card-1"></div>
+              <div class="deck-card deck-card-2"></div>
+              <div class="deck-card deck-card-3"></div>
+              <div class="deck-card deck-card-top">
+                <div class="deck-pattern">
+                  <span class="deck-star">✨</span>
+                  <span class="deck-bear">🐻</span>
+                  <span class="deck-star">🌙</span>
+                </div>
+              </div>
+            </div>
+            
+            <button class="tarot-shuffle-btn" id="tarotShuffleBtn">
+              <span class="shuffle-icon">🔮</span>
+              <span id="shuffleBtnText">แตะเพื่อสับไพ่ (Shuffle Cards)</span>
+            </button>
+            <p class="tarot-pick-counter" id="tarotPickCounter" style="display:none;">
+              อธิษฐานแล้วแตะเลือกไพ่ 3 ใบที่ถูกใจได้เลยน้า (<span id="pickedCount">0</span> / 3 ใบ)
+            </p>
+          </div>
+
+          <!-- Horizontal Fanned-out Cards Deck (After Shuffling) -->
+          <div class="tarot-fanned-deck-wrapper" id="tarotFannedDeckWrapper" style="display:none;">
+            <div class="tarot-fanned-cards" id="tarotFannedCards">
+              <!-- Dynamically populated 8 cards -->
+            </div>
+          </div>
+
+          <!-- 3 Picked Cards Reveal Arena -->
+          <div class="tarot-slots-wrapper">
+            <div class="tarot-slots-container">
+              <!-- Slot 1: Love & Us -->
+              <div class="tarot-slot" id="tarotSlot1" data-slot="1">
+                <div class="slot-header">
+                  <span class="slot-badge">ใบที่ 1</span>
+                  <span class="slot-title">ความรัก & คนข้างกาย 💕</span>
+                </div>
+                <div class="tarot-card-placeholder" id="placeholder1">
+                  <span class="placeholder-icon">🃏</span>
+                  <span class="placeholder-text">รอเลือกใบที่ 1</span>
+                </div>
+              </div>
+
+              <!-- Slot 2: Life & Vitality -->
+              <div class="tarot-slot" id="tarotSlot2" data-slot="2">
+                <div class="slot-header">
+                  <span class="slot-badge">ใบที่ 2</span>
+                  <span class="slot-title">พลังใจ & การใช้ชีวิต ☀️</span>
+                </div>
+                <div class="tarot-card-placeholder" id="placeholder2">
+                  <span class="placeholder-icon">🃏</span>
+                  <span class="placeholder-text">รอเลือกใบที่ 2</span>
+                </div>
+              </div>
+
+              <!-- Slot 3: Special Birthday Luck -->
+              <div class="tarot-slot" id="tarotSlot3" data-slot="3">
+                <div class="slot-header">
+                  <span class="slot-badge">ใบที่ 3</span>
+                  <span class="slot-title">พรพิเศษประจำปี 🌟</span>
+                </div>
+                <div class="tarot-card-placeholder" id="placeholder3">
+                  <span class="placeholder-icon">🃏</span>
+                  <span class="placeholder-text">รอเลือกใบที่ 3</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grand Summary Card (Appears after 3 cards picked) -->
+          <div class="tarot-grand-summary glass-panel" id="tarotGrandSummary" style="display:none;">
+            <div class="summary-magic-stars">✨ 🔮 ✨</div>
+            <h3 class="summary-title">บทสรุปคำพยากรณ์ประจำปีของแบมๆ 💖</h3>
+            <p class="summary-message" id="tarotSummaryMessage">
+              "ปีนี้ของแบมๆ จะเป็นปีที่เต็มไปด้วยความรัก ความสดใส และมีเค้าคอยซัพพอร์ตอยู่ข้างๆ ไม่ว่าจะเหนื่อยหรือมีเรื่องให้ขี้น้อยใจ จำไว้นะว่ามีเค้าคนนี้พร้อมโอ๋และรักแบมๆ เสมอนะคะ!"
+            </p>
+            <div class="summary-tags">
+              <span class="pill-tag">💖 ความรักมั่นคง</span>
+              <span class="pill-tag">☀️ สุขภาพกายใจสดใส</span>
+              <span class="pill-tag">🍀 สมหวังทุกประการ</span>
+            </div>
+            <div class="tarot-summary-actions" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+              <button class="save-tarot-summary-btn" id="saveTarotSummaryBtn">
+                <span>💾</span> บันทึกรูปรวมคำอวยพร 3 ใบ
+              </button>
+              <button class="tarot-repick-btn" id="tarotRepickBtn">
+                <span>🔄</span> สับไพ่อธิษฐานใหม่อีกรอบ
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="scene-navigation">
+          <button class="nav-btn prev-btn" data-go="4">⬅️ ย้อนกลับ</button>
+          <button class="nav-btn next-btn pulse-button" data-go="6">
+            ไปรับคำพยากรณ์จาก Thunder Heart ⚡🔮
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 6: THUNDER HEART LIBRA ORACLE ================= -->
+    <section class="scene" id="scene6">
+      <div class="scene-content tarot-scene-content">
+        <div class="section-title-wrap">
+          <span class="magic-sparkle-tag">⚡ Thunder Heart • แคร์แบร์ราศีตุลย์ (วันเกิด 4 ตุลาคม) ♎</span>
+          <h2 class="section-title">คำทำนายดวงชะตาจาก Thunder Heart ⚡💖</h2>
+          <p class="section-desc">แบมๆ เกิดวันที่ 4 ตุลาคม ราศีแห่งความสมดุล... เลือก 3 สัญลักษณ์นำโชคจาก 20 สัญลักษณ์ เพื่อรับคำพยากรณ์เรื่องดีๆ และพลังใจจาก Thunder Heart ประจำปีนี้กันนะ!</p>
+        </div>
+
+        <!-- Thunder Heart Hero Card -->
+        <div class="thunder-hero-card glass-panel">
+          <div class="thunder-avatar-wrap">
+            <img src="assets/carebears/thunder-heart.png" alt="Thunder Heart Bear" class="thunder-bear-img">
+            <span class="thunder-badge">♎ 4 ตุลาคม • ราศีตุลย์</span>
+          </div>
+          <div class="thunder-hero-text">
+            <h3>สวัสดีนะแบมๆ! เค้าคือ Thunder Heart ⚡💖</h3>
+            <p>
+              แคร์แบร์ผู้พิทักษ์ประจำราศีตุลย์ (Libra) ของแบมๆ เอง! วันเกิดปีนี้ Thunder Heart นำ <strong>20 สัญลักษณ์แห่งดวงดาวและโชคชะตา</strong> มาให้แบมๆ... ลองตั้งจิตอธิษฐานแล้วแตะเลือกมา <strong>3 สัญลักษณ์</strong> ที่ถูกใจที่สุด เดี๋ยว Thunder Heart จะเปิดคำพยากรณ์และมอบพลังสายฟ้าแห่งความหวังให้แบมๆ ตลอดทั้งปีเลยนะ!
+            </p>
+          </div>
+        </div>
+
+        <div class="symbols-selection-section">
+          <!-- Selection counter bar -->
+          <div class="symbols-status-bar">
+            <span class="symbols-counter-pill" id="symbolsCounterPill">
+              ✨ แตะเลือกสัญลักษณ์ที่ถูกใจ (<span id="pickedSymbolsCount">0</span> / 3 สัญลักษณ์)
+            </span>
+          </div>
+
+          <!-- 20 Lucky Symbols Grid -->
+          <div class="symbols-grid-container" id="symbolsGrid">
+            <!-- Dynamically populated 20 symbols from script.js -->
+          </div>
+
+          <!-- 3 Picked Symbols Reveal Arena -->
+          <div class="tarot-slots-wrapper">
+            <div class="tarot-slots-container">
+              <!-- Slot 1: Love & Us -->
+              <div class="tarot-slot thunder-slot" id="thunderSlot1" data-slot="1">
+                <div class="slot-header">
+                  <span class="slot-badge thunder-badge-slot">สัญลักษณ์ที่ 1</span>
+                  <span class="slot-title">ความรัก & คนข้างกาย 💕</span>
+                </div>
+                <div class="tarot-card-placeholder" id="thunderPlaceholder1">
+                  <span class="placeholder-icon">⚡</span>
+                  <span class="placeholder-text">รอเลือกสัญลักษณ์ที่ 1</span>
+                </div>
+              </div>
+
+              <!-- Slot 2: Life & Vitality -->
+              <div class="tarot-slot thunder-slot" id="thunderSlot2" data-slot="2">
+                <div class="slot-header">
+                  <span class="slot-badge thunder-badge-slot">สัญลักษณ์ที่ 2</span>
+                  <span class="slot-title">พลังใจ & การใช้ชีวิต ☀️</span>
+                </div>
+                <div class="tarot-card-placeholder" id="thunderPlaceholder2">
+                  <span class="placeholder-icon">⚡</span>
+                  <span class="placeholder-text">รอเลือกสัญลักษณ์ที่ 2</span>
+                </div>
+              </div>
+
+              <!-- Slot 3: Special Luck & Fortune -->
+              <div class="tarot-slot thunder-slot" id="thunderSlot3" data-slot="3">
+                <div class="slot-header">
+                  <span class="slot-badge thunder-badge-slot">สัญลักษณ์ที่ 3</span>
+                  <span class="slot-title">โชคลาภ & พรพิเศษประจำปี 🌟</span>
+                </div>
+                <div class="tarot-card-placeholder" id="thunderPlaceholder3">
+                  <span class="placeholder-icon">⚡</span>
+                  <span class="placeholder-text">รอเลือกสัญลักษณ์ที่ 3</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grand Summary Card (Appears after 3 symbols picked) -->
+          <div class="tarot-grand-summary glass-panel" id="thunderGrandSummary" style="display:none;">
+            <div class="summary-magic-stars">⚡ 🔮 💖</div>
+            <h3 class="summary-title">สรุปคำพยากรณ์จาก Thunder Heart ถึง แบมๆ (4 ตุลา) ♎</h3>
+            <div class="summary-message" id="thunderSummaryMessage">
+              <!-- Dynamically populated summary -->
+            </div>
+            <div class="summary-tags">
+              <span class="pill-tag">♎ สาวราศีตุลย์คนเก่ง</span>
+              <span class="pill-tag">⚡ พลังสายฟ้าชาร์จใจ</span>
+              <span class="pill-tag">💖 ดวงดาวคุ้มครองตลอดปี</span>
+            <div class="tarot-summary-actions" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+              <button class="save-tarot-summary-btn" id="saveThunderSummaryBtn" style="background: linear-gradient(135deg, #FF9800, #F57C00);">
+                <span>💾</span> บันทึกคำพยากรณ์จาก Thunder Heart
+              </button>
+              <button class="tarot-repick-btn" id="thunderRepickBtn">
+                <span>🔄</span> อธิษฐานเลือกใหม่อีกรอบ
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="scene-navigation">
+          <button class="nav-btn prev-btn" data-go="5">⬅️ ย้อนกลับไปดูไพ่ทาโรต์ 🔮</button>
+          <button class="nav-btn next-btn pulse-button" data-go="7">
+            เปิดอ่านจดหมายจากเค้า 💌✨
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 7: LOVE LETTER FROM เค้า TO แบมๆ ================= -->
+    <section class="scene" id="scene7">
+      <div class="scene-content letter-scene-content">
+        <div class="section-title-wrap">
+          <h2 class="section-title">จดหมายจากเค้า ถึง แบมๆ 💌</h2>
+          <p class="section-desc">ความในใจที่อยากบอก... เผื่อปกติเค้าเป็นคนพูดไม่ค่อยเก่ง</p>
+        </div>
+
+        <div class="envelope-wrapper" id="envelopeWrapper">
+          <div class="envelope" id="envelope">
+            <div class="envelope-flap" id="envelopeFlap"></div>
+            <div class="envelope-seal" id="envelopeSeal">❤️ แตะเพื่อเปิด</div>
+            <div class="envelope-pocket"></div>
+            
+            <!-- Letter Sheet Inside -->
+            <div class="letter-sheet" id="letterSheet">
+              <div class="letter-header">
+                <span class="letter-date">วันเกิดของแบมๆ 🎂</span>
+                <h3 class="letter-greeting">ถึง แบมๆ</h3>
+              </div>
+              <div class="letter-body">
+                <p>
+                  สุขสันต์วันเกิดนะแบมๆ ปีนี้ก็โตขึ้นอีกปีแล้ว ขอให้สุขภาพแข็งแรง ไม่ป่วยบ่อยๆ นะ
+                </p>
+                <p>
+                  เค้าอยากบอกว่า เค้าขอโทษนะที่ช่วงนี้งานยุ่งมาก จนไม่ค่อยมีเวลาให้เหมือนคู่อื่น ยิ่งเราอยู่ไกลกันด้วย เค้าก็รู้ว่าแบมๆ ต้องเหงาและน้อยใจอยู่บ่อยๆ
+                </p>
+                <p>
+                  เค้าเป็นคนไม่ค่อยหวาน พูดจาเอาใจไม่เก่ง แล้วก็ง้อไม่ค่อยเป็นด้วย... แต่ที่เค้าก้มหน้าก้มตาทำงานหนักทุกวันนี้ เพราะเค้าอยากเคลียร์ปัญหาต่างๆ ให้เราได้มีเวลาด้วยกัน ในแผนอนาคตของเค้า มันมีแบมๆ อยู่ในนั้นเสมอเลยนะ
+                </p>
+                <p>
+                  เวลาแบมๆ หน้างอหรือน้อยใจ เค้าไม่เคยรำคาญเลยนะ แค่บางทีเค้าทื่อๆ ไม่รู้จะพูดยังไงให้แบมๆ อารมณ์ดี แต่มีเรื่องอะไรก็บอกเค้าตรงๆ ได้เสมอ ไม่ต้องเก็บไว้คนเดียวนะครับ
+                </p>
+                <p class="letter-highlight">
+                  "ถึงเค้าจะพูดไม่เก่ง แต่เค้าจริงจังและรักแบมๆ มากนะ... อยู่ด้วยกันแบบนี้ไปเรื่อยๆ นะครับ"
+                </p>
+              </div>
+              <div class="letter-signature">
+                <p>รักแบมๆ นะ 💖</p>
+                <span class="sign-from">จาก เค้า</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Big Hug Action & Confetti Replay -->
+        <div class="letter-action-row">
+          <button class="hug-btn" id="hugBtn">
+            <span>🫂</span> กอดกันนะ (กดรับกอด)
+          </button>
+          <button class="replay-all-btn" id="replayBtn">
+            <span>🔄</span> เล่นใหม่อีกรอบตั้งแต่ต้น
+          </button>
+        </div>
+
+        <div class="mascot-guide bottom-guide">
+          <img src="assets/carebears/bedtime-sleep.png" alt="Bedtime Bear" class="sleep-bear">
+          <p class="guide-note">"ดูแลสุขภาพด้วยนะ อย่าลืมนอนไวๆ นะคะ"</p>
+        </div>
+
+        <div class="scene-navigation" style="margin-top: 25px;">
+          <button class="nav-btn prev-btn" data-go="6">⬅️ ย้อนกลับไปดู Thunder Heart ⚡</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- iOS & iPad Friendly Photo Result Modal -->
+  <div class="ios-modal-backdrop" id="iosPhotoModal">
+    <div class="ios-modal-card">
+      <div class="ios-modal-header">
+        <h3 class="ios-modal-title" id="iosModalTitle">รูปคู่หน้าปั่นๆ แบมๆ & เค้า 💖📸</h3>
+        <button class="ios-modal-close" id="closeIosModalBtn" aria-label="ปิด">✕</button>
+      </div>
+      <div class="ios-modal-body">
+        <img id="iosModalImg" src="" alt="Polaroid Result" class="ios-modal-preview">
+        <p class="ios-save-instruction">
+          💡 <strong>สำหรับ iPhone & iPad:</strong><br>
+          แตะปุ่มด้านล่างเพื่อแชร์หรือบันทึกลง Photos หรือ <strong>แตะที่รูปค้างไว้</strong> แล้วเลือก <em>"บันทึกรูปภาพ (Save Image)"</em> ได้เลยค่ะ!
+        </p>
+      </div>
+      <div class="ios-modal-actions">
+        <button class="ios-share-btn" id="iosShareBtn">
+          <span>📤</span> แชร์ / บันทึกไปยัง Photos
+        </button>
+        <button class="ios-download-btn" id="iosDirectDownloadBtn">
+          <span>💾</span> ดาวน์โหลดไฟล์
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cute Audio Chime Synth / BGM Engine & App Script -->
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1056,6 +1056,7 @@ function stopHerCameraStream() {
 
 /* ================= RENDER MERGED DUO POLAROID CANVAS & DOWNLOAD ================= */
 async function renderDuoCanvasAndDownload() {
+  await ensureFontsLoaded();
   const canvas = document.getElementById('hiddenDuoCanvas');
   const ctx = canvas.getContext('2d');
 
@@ -1064,6 +1065,7 @@ async function renderDuoCanvasAndDownload() {
   const H = 1080;
   canvas.width = W;
   canvas.height = H;
+  ctx.direction = 'ltr';
 
   // 1. Background gradient (Soft pastel rainbow Care Bears atmosphere)
   const bgGrad = ctx.createLinearGradient(0, 0, W, H);
@@ -1118,8 +1120,7 @@ async function renderDuoCanvasAndDownload() {
 
   ctx.fillStyle = '#C2185B';
   ctx.font = 'bold 30px Fredoka, Mali, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('🌈 HBD BAM-BAM • คู่หูตัวตึง Care-a-Lot 💖', W / 2, bannerY + 45);
+  drawCenteredText(ctx, '🌈 HBD BAM-BAM • คู่หูตัวตึง Care-a-Lot 💖', W / 2, bannerY + 45);
 
   // Helper function to draw a single polaroid card
   function drawPolaroidCard(cx, cy, cardW, cardH, angleDeg, photoImg, titleText, subText, ribbonBg, ribbonText, isBoy) {
@@ -1158,8 +1159,7 @@ async function renderDuoCanvasAndDownload() {
     ctx.fill();
     ctx.fillStyle = '#FFF';
     ctx.font = 'bold 16px Mali, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(ribbonText, 0, -cardH / 2 + 53);
+    drawCenteredText(ctx, ribbonText, 0, -cardH / 2 + 53);
 
     // Inner photo frame
     const pW = cardW - 40;
@@ -1198,11 +1198,10 @@ async function renderDuoCanvasAndDownload() {
 
       ctx.fillStyle = isBoy ? '#5E35B1' : '#C2185B';
       ctx.font = 'bold 44px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(isBoy ? '🐻🛠️' : '😜📸', 0, pY + pH / 2 - 10);
+      drawCenteredText(ctx, isBoy ? '🐻🛠️' : '😜📸', 0, pY + pH / 2 - 10);
 
       ctx.font = 'bold 20px Mali, sans-serif';
-      ctx.fillText(isBoy ? 'รูปหน้าเค้า' : 'ตาแบมๆ แล้ว!', 0, pY + pH / 2 + 35);
+      drawCenteredText(ctx, isBoy ? 'รูปหน้าเค้า' : 'ตาแบมๆ แล้ว!', 0, pY + pH / 2 + 35);
     }
 
     // Photo border
@@ -1213,12 +1212,11 @@ async function renderDuoCanvasAndDownload() {
     // Bottom Captions
     ctx.fillStyle = '#C2185B';
     ctx.font = 'bold 22px Fredoka, Mali, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(titleText, 0, pY + pH + 34);
+    drawCenteredText(ctx, titleText, 0, pY + pH + 34);
 
     ctx.fillStyle = '#5D4037';
     ctx.font = '16px Mali, sans-serif';
-    ctx.fillText(subText, 0, pY + pH + 60);
+    drawCenteredText(ctx, subText, 0, pY + pH + 60);
 
     ctx.restore();
   }
@@ -1266,9 +1264,8 @@ async function renderDuoCanvasAndDownload() {
   ctx.stroke();
 
   ctx.font = '36px sans-serif';
-  ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('💖', W / 2, 490);
+  drawCenteredText(ctx, '💖', W / 2, 490);
   ctx.restore();
 
   // 3. Bottom Romantic Quote Banner
@@ -1287,12 +1284,11 @@ async function renderDuoCanvasAndDownload() {
 
   ctx.fillStyle = '#D81B60';
   ctx.font = 'bold 22px Mali, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('"เพราะเค้าอยากเคลียร์ปัญหาต่างๆ ให้เราได้มีเวลาด้วยกัน..."', W / 2, footY + 40);
+  drawCenteredText(ctx, '"เพราะเค้าอยากเคลียร์ปัญหาต่างๆ ให้เราได้มีเวลาด้วยกัน..."', W / 2, footY + 40);
 
   ctx.fillStyle = '#8E24AA';
   ctx.font = 'bold 17px Fredoka, Mali, sans-serif';
-  ctx.fillText('Bam-Bam & Khao • Birthday Keepsake 💖', W / 2, footY + 70);
+  drawCenteredText(ctx, 'Bam-Bam & Khao • Birthday Keepsake 💖', W / 2, footY + 70);
 
   // 4. iOS & iPad Friendly Export (Web Share API + In-App Modal)
   showCanvasInModal(
@@ -1336,6 +1332,35 @@ function initCakeScene() {
 }
 
 /* ================= REUSABLE MODAL & CANVAS UTILITIES ================= */
+async function ensureFontsLoaded() {
+  if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
+    try {
+      await document.fonts.ready;
+      await Promise.allSettled([
+        document.fonts.load('bold 24px Mali'),
+        document.fonts.load('bold 24px Fredoka'),
+        document.fonts.load('20px Mali'),
+        document.fonts.load('20px Fredoka')
+      ]);
+    } catch (e) {
+      console.warn('Font loading check:', e);
+    }
+  }
+}
+
+function drawCenteredText(ctx, text, centerX, y) {
+  if (text === undefined || text === null) return;
+  const str = String(text);
+  if (!str) return;
+  ctx.save();
+  ctx.textAlign = 'left';
+  ctx.direction = 'ltr';
+  const metrics = ctx.measureText(str);
+  const startX = Math.round(centerX - (metrics.width / 2));
+  ctx.fillText(str, startX, y);
+  ctx.restore();
+}
+
 function loadImage(src) {
   return new Promise((resolve) => {
     if (!src) return resolve(null);
@@ -1425,46 +1450,84 @@ function showCanvasInModal(canvas, defaultFilename, modalTitle, shareText) {
 
 function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight, isCenter = false) {
   if (!text) return y;
-  const chars = Array.from(text);
-  let line = '';
-  let curY = y;
+  const str = String(text);
 
-  for (let n = 0; n < chars.length; n++) {
-    const testLine = line + chars[n];
-    const metrics = ctx.measureText(testLine);
-    if (metrics.width > maxWidth && line.length > 0) {
-      if (isCenter) {
-        ctx.textAlign = 'center';
-        ctx.fillText(line, x, curY);
-      } else {
-        ctx.textAlign = 'left';
-        ctx.fillText(line, x, curY);
+  ctx.save();
+  ctx.textAlign = 'left';
+  ctx.direction = 'ltr';
+
+  let tokens = [];
+  if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+    try {
+      const segmenter = new Intl.Segmenter('th', { granularity: 'word' });
+      tokens = Array.from(segmenter.segment(str), s => s.segment);
+    } catch (e) {
+      tokens = Array.from(str);
+    }
+  } else {
+    tokens = str.split(/(\s+)/);
+  }
+
+  const lines = [];
+  let currentLine = '';
+
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+    const testLine = currentLine + token;
+    const testWidth = ctx.measureText(testLine).width;
+
+    if (testWidth > maxWidth && currentLine.length > 0) {
+      lines.push(currentLine);
+      currentLine = token;
+    } else if (testWidth > maxWidth && currentLine.length === 0) {
+      const chars = Array.from(token);
+      let subLine = '';
+      for (let c = 0; c < chars.length; c++) {
+        if (ctx.measureText(subLine + chars[c]).width > maxWidth && subLine.length > 0) {
+          lines.push(subLine);
+          subLine = chars[c];
+        } else {
+          subLine += chars[c];
+        }
       }
-      line = chars[n];
-      curY += lineHeight;
+      currentLine = subLine;
     } else {
-      line = testLine;
+      currentLine = testLine;
     }
   }
-  if (line.length > 0) {
+  if (currentLine.length > 0) {
+    lines.push(currentLine);
+  }
+
+  let curY = y;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) {
+      curY += lineHeight;
+      continue;
+    }
     if (isCenter) {
-      ctx.textAlign = 'center';
-      ctx.fillText(line, x, curY);
+      const lineMetrics = ctx.measureText(line);
+      const startX = Math.round(x - (lineMetrics.width / 2));
+      ctx.fillText(line, startX, curY);
     } else {
-      ctx.textAlign = 'left';
       ctx.fillText(line, x, curY);
     }
     curY += lineHeight;
   }
+
+  ctx.restore();
   return curY;
 }
 
 /* ================= TAROT CANVAS RENDERING ================= */
 async function renderTarotCardImage(cardData, slotIndex) {
+  await ensureFontsLoaded();
   const canvas = document.createElement('canvas');
   canvas.width = 800;
   canvas.height = 1200;
   const ctx = canvas.getContext('2d');
+  ctx.direction = 'ltr';
 
   const slotTitle = slotIndex === 1
     ? 'ความรัก & คนข้างกาย 💕'
@@ -1511,28 +1574,27 @@ async function renderTarotCardImage(cardData, slotIndex) {
   // Four Corner Stars
   ctx.fillStyle = '#FFA000';
   ctx.font = '22px Fredoka, sans-serif';
-  ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('✦', 60, 60);
-  ctx.fillText('✦', 740, 60);
-  ctx.fillText('✦', 60, 1140);
-  ctx.fillText('✦', 740, 1140);
+  drawCenteredText(ctx, '✦', 60, 60);
+  drawCenteredText(ctx, '✦', 740, 60);
+  drawCenteredText(ctx, '✦', 60, 1140);
+  drawCenteredText(ctx, '✦', 740, 1140);
+  ctx.textBaseline = 'alphabetic';
 
   // Top Header Area
   ctx.fillStyle = '#8E24AA';
   ctx.font = 'bold 16px Fredoka, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('✦ CARE BEARS BIRTHDAY TAROT ✦', 400, 90);
+  drawCenteredText(ctx, '✦ CARE BEARS BIRTHDAY TAROT ✦', 400, 90);
 
   // Slot Badge Banner
   ctx.fillStyle = '#E91E63';
   ctx.font = 'bold 20px Mali, sans-serif';
-  ctx.fillText(`✦ ไพ่ใบที่ ${slotIndex} : ${slotTitle} ✦`, 400, 126);
+  drawCenteredText(ctx, `✦ ไพ่ใบที่ ${slotIndex} : ${slotTitle} ✦`, 400, 126);
 
   // Card Numeral
   ctx.fillStyle = '#7B1FA2';
   ctx.font = 'bold 18px Fredoka, sans-serif';
-  ctx.fillText(cardData.numeral, 400, 160);
+  drawCenteredText(ctx, cardData.numeral, 400, 160);
 
   // Card Title
   ctx.save();
@@ -1540,7 +1602,7 @@ async function renderTarotCardImage(cardData, slotIndex) {
   ctx.font = 'bold 32px Mali, sans-serif';
   ctx.shadowColor = 'rgba(233, 30, 99, 0.15)';
   ctx.shadowBlur = 8;
-  ctx.fillText(cardData.title, 400, 204);
+  drawCenteredText(ctx, cardData.title, 400, 204);
   ctx.restore();
 
   // Center Care Bear Halo
@@ -1583,8 +1645,7 @@ async function renderTarotCardImage(cardData, slotIndex) {
 
   ctx.fillStyle = '#880E4F';
   ctx.font = 'bold 20px Mali, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(`✨ ${cardData.keyword} ✨`, 400, 632);
+  drawCenteredText(ctx, `✨ ${cardData.keyword} ✨`, 400, 632);
 
   // Blessing Text Box
   const boxX = 65;
@@ -1604,6 +1665,7 @@ async function renderTarotCardImage(cardData, slotIndex) {
   ctx.fillStyle = '#C2185B';
   ctx.font = 'bold 21px Mali, sans-serif';
   ctx.textAlign = 'left';
+  ctx.direction = 'ltr';
   ctx.fillText('💖 คำอวยพร & ความหมายของไพ่:', boxX + 30, boxY + 45);
 
   ctx.fillStyle = '#3E2723';
@@ -1613,12 +1675,11 @@ async function renderTarotCardImage(cardData, slotIndex) {
   // Footer
   ctx.fillStyle = '#D81B60';
   ctx.font = 'bold 20px Fredoka, Mali, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText("🎂 Bam-Bam's Special Day • 4 October 💖", 400, 1075);
+  drawCenteredText(ctx, "🎂 Bam-Bam's Special Day • 4 October 💖", 400, 1075);
 
   ctx.fillStyle = '#8E24AA';
   ctx.font = '15px Mali, sans-serif';
-  ctx.fillText('✦ Care-a-Lot Celestial Birthday Blessing • สุขสันต์วันเกิดนะ แบมๆ ✦', 400, 1110);
+  drawCenteredText(ctx, '✦ Care-a-Lot Celestial Birthday Blessing • สุขสันต์วันเกิดนะ แบมๆ ✦', 400, 1110);
 
   // Display in iOS & iPad Friendly Modal
   showCanvasInModal(
@@ -1631,11 +1692,13 @@ async function renderTarotCardImage(cardData, slotIndex) {
 
 async function renderTarotSummaryCanvas(pickedCards) {
   if (!pickedCards || pickedCards.length < 3) return;
+  await ensureFontsLoaded();
 
   const canvas = document.createElement('canvas');
   canvas.width = 1200;
   canvas.height = 850;
   const ctx = canvas.getContext('2d');
+  ctx.direction = 'ltr';
 
   // Bright Dreamy Gradient Background
   const grad = ctx.createLinearGradient(0, 0, 1200, 850);
@@ -1660,12 +1723,11 @@ async function renderTarotSummaryCanvas(pickedCards) {
   // Header
   ctx.fillStyle = '#C2185B';
   ctx.font = 'bold 24px Fredoka, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('✦ CARE BEARS BIRTHDAY TAROT • บทสรุปคำพยากรณ์ประจำปี ✦', 600, 68);
+  drawCenteredText(ctx, '✦ CARE BEARS BIRTHDAY TAROT • บทสรุปคำพยากรณ์ประจำปี ✦', 600, 68);
 
   ctx.fillStyle = '#8E24AA';
   ctx.font = 'bold 18px Mali, sans-serif';
-  ctx.fillText('สุขสันต์วันเกิดนะ แบมๆ (4 ตุลาคม) 💖🎂 • ไพ่ 3 ใบที่แบมๆ เลือกไว้', 600, 102);
+  drawCenteredText(ctx, 'สุขสันต์วันเกิดนะ แบมๆ (4 ตุลาคม) 💖🎂 • ไพ่ 3 ใบที่แบมๆ เลือกไว้', 600, 102);
 
   // 3 Mini Cards Side by Side
   const slotTitles = ['ความรัก & คนข้างกาย 💕', 'พลังใจ & การใช้ชีวิต ☀️', 'พรพิเศษประจำปี 🌟'];
@@ -1697,13 +1759,12 @@ async function renderTarotSummaryCanvas(pickedCards) {
 
     ctx.fillStyle = '#FFFFFF';
     ctx.font = 'bold 13px Mali, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(`ใบที่ ${i + 1}: ${slotTitles[i]}`, cx + cardW / 2, cy + 32);
+    drawCenteredText(ctx, `ใบที่ ${i + 1}: ${slotTitles[i]}`, cx + cardW / 2, cy + 32);
 
     // Card Title
     ctx.fillStyle = '#C2185B';
     ctx.font = 'bold 17px Mali, sans-serif';
-    ctx.fillText(card.title, cx + cardW / 2, cy + 68);
+    drawCenteredText(ctx, card.title, cx + cardW / 2, cy + 68);
 
     // Bear Image Frame
     const bearCircleX = cx + cardW / 2;
@@ -1729,7 +1790,7 @@ async function renderTarotSummaryCanvas(pickedCards) {
 
     ctx.fillStyle = '#880E4F';
     ctx.font = 'bold 12.5px Mali, sans-serif';
-    ctx.fillText(card.keyword, cx + cardW / 2, cy + 235);
+    drawCenteredText(ctx, card.keyword, cx + cardW / 2, cy + 235);
 
     // Blessing Excerpt
     ctx.fillStyle = '#3E2723';
@@ -1754,6 +1815,7 @@ async function renderTarotSummaryCanvas(pickedCards) {
   ctx.fillStyle = '#C2185B';
   ctx.font = 'bold 18px Mali, sans-serif';
   ctx.textAlign = 'left';
+  ctx.direction = 'ltr';
   ctx.fillText('🔮 บทสรุปคำพยากรณ์ประจำปีของแบมๆ 💖:', sumBoxX + 25, sumBoxY + 36);
 
   ctx.fillStyle = '#4E342E';
@@ -1770,13 +1832,14 @@ async function renderTarotSummaryCanvas(pickedCards) {
 
   ctx.fillStyle = '#8E24AA';
   ctx.font = 'bold 15px Mali, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.direction = 'ltr';
   ctx.fillText('✨ ความรักมั่นคง • สุขภาพกายใจสดใส • สมหวังทุกประการ ✨', sumBoxX + 25, sumBoxY + 145);
 
   // Footer Keepsake
   ctx.fillStyle = '#8E24AA';
   ctx.font = 'bold 17px Fredoka, Mali, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('Bam-Bam & Khao • Birthday Keepsake 2026 💖', 600, 795);
+  drawCenteredText(ctx, 'Bam-Bam & Khao • Birthday Keepsake 2026 💖', 600, 795);
 
   showCanvasInModal(
     canvas,
@@ -1975,10 +2038,12 @@ function initTarotScene() {
 
 /* ================= THUNDER HEART CANVAS RENDERING ================= */
 async function renderThunderCardImage(sym, slotIndex) {
+  await ensureFontsLoaded();
   const canvas = document.createElement('canvas');
   canvas.width = 800;
   canvas.height = 1200;
   const ctx = canvas.getContext('2d');
+  ctx.direction = 'ltr';
 
   const slotTitle = slotIndex === 1
     ? 'ความรัก & คนข้างกาย 💕'
@@ -2016,26 +2081,25 @@ async function renderThunderCardImage(sym, slotIndex) {
   // Corner Symbols (⚡ and ♎)
   ctx.fillStyle = '#FFFFFF';
   ctx.font = '24px sans-serif';
-  ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('⚡', 60, 60);
-  ctx.fillText('♎', 740, 60);
-  ctx.fillText('♎', 60, 1140);
-  ctx.fillText('⚡', 740, 1140);
+  drawCenteredText(ctx, '⚡', 60, 60);
+  drawCenteredText(ctx, '♎', 740, 60);
+  drawCenteredText(ctx, '♎', 60, 1140);
+  drawCenteredText(ctx, '⚡', 740, 1140);
+  ctx.textBaseline = 'alphabetic';
 
   // Top Header Area
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 18px Fredoka, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('⚡ THUNDER HEART • LIBRA CARE BEAR ♎', 400, 90);
+  drawCenteredText(ctx, '⚡ THUNDER HEART • LIBRA CARE BEAR ♎', 400, 90);
 
   ctx.fillStyle = '#FFF8E1';
   ctx.font = 'bold 20px Mali, sans-serif';
-  ctx.fillText('✦ แคร์แบร์ประจำราศีตุลย์ • วันเกิด 4 ตุลาคม ✦', 400, 126);
+  drawCenteredText(ctx, '✦ แคร์แบร์ประจำราศีตุลย์ • วันเกิด 4 ตุลาคม ✦', 400, 126);
 
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 22px Mali, sans-serif';
-  ctx.fillText(`คำทำนายที่ ${slotIndex} : ${slotTitle}`, 400, 165);
+  drawCenteredText(ctx, `คำทำนายที่ ${slotIndex} : ${slotTitle}`, 400, 165);
 
   // Center Halo with Big Glowing Icon
   const haloX = 400;
@@ -2062,14 +2126,14 @@ async function renderThunderCardImage(sym, slotIndex) {
 
   // Draw Emoji / Icon in center halo
   ctx.font = '90px sans-serif';
-  ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(sym.icon, haloX, haloY);
+  drawCenteredText(ctx, sym.icon, haloX, haloY);
+  ctx.textBaseline = 'alphabetic';
 
   // Symbol Name
   ctx.fillStyle = '#BF360C';
   ctx.font = 'bold 36px Mali, sans-serif';
-  ctx.fillText(sym.name, 400, 525);
+  drawCenteredText(ctx, sym.name, 400, 525);
 
   // Aspect Badge
   ctx.fillStyle = '#FFF0F5';
@@ -2082,7 +2146,7 @@ async function renderThunderCardImage(sym, slotIndex) {
 
   ctx.fillStyle = '#7B1FA2';
   ctx.font = 'bold 18px Mali, sans-serif';
-  ctx.fillText(`⚡ ${sym.aspect}`, 400, 577);
+  drawCenteredText(ctx, `⚡ ${sym.aspect}`, 400, 577);
 
   // Forecast Box
   const boxX = 65;
@@ -2101,6 +2165,7 @@ async function renderThunderCardImage(sym, slotIndex) {
   ctx.fillStyle = '#E65100';
   ctx.font = 'bold 22px Mali, sans-serif';
   ctx.textAlign = 'left';
+  ctx.direction = 'ltr';
   ctx.fillText('✨ เรื่องดีๆ ที่จะพบในปีนี้:', boxX + 28, boxY + 44);
 
   ctx.fillStyle = '#3E2723';
@@ -2122,6 +2187,7 @@ async function renderThunderCardImage(sym, slotIndex) {
   ctx.fillStyle = '#BF360C';
   ctx.font = 'bold 22px Mali, sans-serif';
   ctx.textAlign = 'left';
+  ctx.direction = 'ltr';
   ctx.fillText('⚡ พลังใจจาก Thunder Heart:', boxX + 28, tBoxY + 44);
 
   ctx.fillStyle = '#4E342E';
@@ -2131,8 +2197,7 @@ async function renderThunderCardImage(sym, slotIndex) {
   // Footer
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 19px Fredoka, Mali, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('⚡ Thunder Heart Bear • พลังใจแด่แบมๆ ตลอดทั้งปี ♎💖', 400, 1105);
+  drawCenteredText(ctx, '⚡ Thunder Heart Bear • พลังใจแด่แบมๆ ตลอดทั้งปี ♎💖', 400, 1105);
 
   showCanvasInModal(
     canvas,
@@ -2144,11 +2209,13 @@ async function renderThunderCardImage(sym, slotIndex) {
 
 async function renderThunderSummaryCanvas(pickedSymbols) {
   if (!pickedSymbols || pickedSymbols.length < 3) return;
+  await ensureFontsLoaded();
 
   const canvas = document.createElement('canvas');
   canvas.width = 1200;
   canvas.height = 850;
   const ctx = canvas.getContext('2d');
+  ctx.direction = 'ltr';
 
   // Amber / Golden Celestial Gradient
   const grad = ctx.createLinearGradient(0, 0, 1200, 850);
@@ -2173,12 +2240,11 @@ async function renderThunderSummaryCanvas(pickedSymbols) {
   // Header
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 24px Fredoka, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('⚡ THUNDER HEART • สรุปคำพยากรณ์แห่งดวงดาวประจำราศีตุลย์ ♎', 600, 68);
+  drawCenteredText(ctx, '⚡ THUNDER HEART • สรุปคำพยากรณ์แห่งดวงดาวประจำราศีตุลย์ ♎', 600, 68);
 
   ctx.fillStyle = '#FFF8E1';
   ctx.font = 'bold 18px Mali, sans-serif';
-  ctx.fillText('ถึง แบมๆ (วันเกิด 4 ตุลาคม) • แคร์แบร์ผู้พิทักษ์แห่งความสมดุลและพลังใจ ⚡💖', 600, 102);
+  drawCenteredText(ctx, 'ถึง แบมๆ (วันเกิด 4 ตุลาคม) • แคร์แบร์ผู้พิทักษ์แห่งความสมดุลและพลังใจ ⚡💖', 600, 102);
 
   // 3 Symbol Cards
   const slotTitles = ['ความรัก & คนข้างกาย 💕', 'พลังใจ & การใช้ชีวิต ☀️', 'โชคลาภ & พรพิเศษ 🌟'];
@@ -2209,8 +2275,7 @@ async function renderThunderSummaryCanvas(pickedSymbols) {
 
     ctx.fillStyle = '#FFFFFF';
     ctx.font = 'bold 13px Mali, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(`สัญลักษณ์ที่ ${i + 1}: ${slotTitles[i]}`, cx + cardW / 2, cy + 32);
+    drawCenteredText(ctx, `สัญลักษณ์ที่ ${i + 1}: ${slotTitles[i]}`, cx + cardW / 2, cy + 32);
 
     // Icon Circle
     const iconCircleX = cx + cardW / 2;
@@ -2225,17 +2290,18 @@ async function renderThunderSummaryCanvas(pickedSymbols) {
 
     ctx.font = '48px sans-serif';
     ctx.textBaseline = 'middle';
-    ctx.fillText(sym.icon, iconCircleX, iconCircleY);
+    drawCenteredText(ctx, sym.icon, iconCircleX, iconCircleY);
+    ctx.textBaseline = 'alphabetic';
 
     // Symbol Name
     ctx.fillStyle = '#E65100';
     ctx.font = 'bold 18px Mali, sans-serif';
-    ctx.fillText(sym.name, cx + cardW / 2, cy + 175);
+    drawCenteredText(ctx, sym.name, cx + cardW / 2, cy + 175);
 
     // Aspect
     ctx.fillStyle = '#7B1FA2';
     ctx.font = 'bold 12.5px Mali, sans-serif';
-    ctx.fillText(`⚡ ${sym.aspect}`, cx + cardW / 2, cy + 200);
+    drawCenteredText(ctx, `⚡ ${sym.aspect}`, cx + cardW / 2, cy + 200);
 
     // Forecast text
     const fText = i === 0 ? sym.forecast1 : (i === 1 ? sym.forecast2 : sym.forecast3);
@@ -2252,6 +2318,7 @@ async function renderThunderSummaryCanvas(pickedSymbols) {
     ctx.fillStyle = '#BF360C';
     ctx.font = 'bold 11px Mali, sans-serif';
     ctx.textAlign = 'left';
+    ctx.direction = 'ltr';
     ctx.fillText('⚡ พลังใจจาก Thunder Heart:', cx + 20, cy + 358);
 
     ctx.fillStyle = '#4E342E';
@@ -2276,6 +2343,7 @@ async function renderThunderSummaryCanvas(pickedSymbols) {
   ctx.fillStyle = '#E65100';
   ctx.font = 'bold 18px Mali, sans-serif';
   ctx.textAlign = 'left';
+  ctx.direction = 'ltr';
   ctx.fillText('⚡ สารพยากรณ์สรุปแห่งดวงดาวจาก Thunder Heart ถึง แบมๆ (4 ตุลาคม) ♎:', sumBoxX + 25, sumBoxY + 36);
 
   ctx.fillStyle = '#3E2723';
@@ -2292,13 +2360,14 @@ async function renderThunderSummaryCanvas(pickedSymbols) {
 
   ctx.fillStyle = '#BF360C';
   ctx.font = 'bold 15px Mali, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.direction = 'ltr';
   ctx.fillText('♎ สาวราศีตุลย์คนเก่ง • ⚡ พลังสายฟ้าชาร์จใจ • 💖 ดวงดาวคุ้มครองตลอดปี', sumBoxX + 25, sumBoxY + 145);
 
   // Footer Keepsake
   ctx.fillStyle = '#4E342E';
   ctx.font = 'bold 17px Fredoka, Mali, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('Thunder Heart Bear • Libra Guardian for Bam-Bam ⚡💖', 600, 795);
+  drawCenteredText(ctx, 'Thunder Heart Bear • Libra Guardian for Bam-Bam ⚡💖', 600, 795);
 
   showCanvasInModal(
     canvas,
